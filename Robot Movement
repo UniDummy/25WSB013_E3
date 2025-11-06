@@ -46,6 +46,14 @@ servoLeft.writeMicroseconds(1500);
 }  
 
 
+// stop - just consider about safety
+void stop()
+{
+servoRight.writeMicroseconds(1500);
+servoLeft.writeMicrosecond(1500);
+}
+
+
 void setup ()  
 {  
 servoLeft.attach(13);  
