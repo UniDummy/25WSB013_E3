@@ -1,0 +1,70 @@
+#include <Servo.h>  
+Servo servoRight;  
+Servo servoLeft;
+
+// moving forward 
+void move_forward()  
+{  
+servoLeft.writeMicroseconds(1000);  
+servoRight.writeMicroseconds(2000);  
+delay(1000);  
+servoRight.writeMicroseconds(1500);  
+servoLeft.writeMicroseconds(1500);  
+}  
+ 
+ 
+// moving backward 
+void move_backward() 
+{ 
+servoLeft.writeMicroseconds(2000); 
+servoRight.writeMicroseconds(1000); 
+delay(1000); 
+servoLeft.writeMicroseconds(1500); 
+servoRight.writeMicroseconds(1500); 
+} 
+
+
+// turn left 
+void move_right()  
+{  
+servoRight.writeMicroseconds(1700);  
+servoLeft.writeMicroseconds(1500);  
+delay(1200);  
+servoRight.writeMicroseconds(1500);  
+servoLeft.writeMicroseconds(1500);  
+}  
+ 
+ 
+// turn right 
+void move_left()  
+{  
+servoRight.writeMicroseconds(1500);  
+servoLeft.writeMicroseconds(1300);  
+delay(1200);  
+servoRight.writeMicroseconds(1500);  
+servoLeft.writeMicroseconds(1500);  
+}  
+
+
+void setup ()  
+{  
+servoLeft.attach(13);  
+servoRight.attach(12);  
+//servoLeft.writeMicroseconds(2000);  
+//servoRight.writeMicroseconds(1000);  
+Serial.begin(9600);  
+Serial.println("Type: w = forward, a = left, d = right, s = backward");  
+}  
+ 
+ 
+void loop()  
+{  
+if (Serial.available() > 0) {  
+char command = Serial.read();  
+if (command == 'w') move_forward();  
+else if (command == 'a') move_left();  
+else if (command == 'd') move_right();  
+else if (command == 's') move_backward();  
+}  
+}  
+ 
