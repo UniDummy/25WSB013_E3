@@ -1,0 +1,32 @@
+const int Forward_B = 2;
+const int Backward_B = 3;
+const int Left_B = 4;
+const int Right_B = 5;
+
+void setup() {
+  pinMode(Forward_B, INPUT_PULLUP);
+  pinMode(Backward_B, INPUT_PULLUP);
+  pinMode(Left_B, INPUT_PULLUP);
+  pinMode(Right_B, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int Forward_state = digitalRead(Forward_B);
+  int Backward_state = digitalRead(Backward_B);
+  int Left_state = digitalRead(Left_B);
+  int Right_state = digitalRead(Right_B);
+
+
+  if (Forward_state == LOW) {
+    Serial.println("Forward button is pressed");
+  } else if (Backward_state == LOW) {
+    Serial.println("Backward button is pressed");
+  } else if (Left_state == LOW) {
+    Serial.println("Left button is pressed");
+  } else if (Right_state == LOW) {
+    Serial.println("Right button is pressed");
+  } else {
+    Serial.println("Nothing is pressed")
+  }
+}
