@@ -11,3 +11,13 @@ Remote Control:
 For our remote control, we have decided to use 5 buttons to control the robot. Each button corresponds to a specific movement command, enabling the robot to navigate through obstacles and climb the see-saw. To establish communication between the remote control and the robot, we are using Bluetooth modules for connecting the Arduino on the robot, as the risk of having interference at the Olympic will be low. The remote control program will be using a polling technique to continuously checking the status of each button. This will allow the robot to move when a button is pressed and to stop immediately when the button is released, provding a smoother control. 
 
 Wireless Charging:
+
+
+
+There is 2 branches for Github project:
+
+Main:
+This branch contain the finalized, integrated code that consolidates all components into a single program
+
+Sub:
+This branch contains the individual test scripts used to verify the performance of each component. It demonstrates the specific tasks of each module.
