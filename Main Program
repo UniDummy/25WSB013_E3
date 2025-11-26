@@ -1,0 +1,94 @@
+#include <Servo.h>
+// input for the Robot
+Servo servoRight;
+Servo servoLeft;
+
+// input for the buttons
+const int Forward_B = 2;
+const int Backward_B = 3;
+const int Left_B = 4;
+const int Right_B = 5;
+
+
+// Subroutines for Robot movement
+// moving forward
+void move_forward() {
+  servoLeft.writeMicroseconds(2000);  
+  servoRight.writeMicroseconds(1000);  
+}  
+ 
+// moving backward 
+void move_backward() { 
+  servoLeft.writeMicroseconds(1000); 
+  servoRight.writeMicroseconds(2000); 
+} 
+
+// turn left 
+void move_right() {
+  servoRight.writeMicroseconds(1700);  
+  servoLeft.writeMicroseconds(1700);
+}  
+ 
+// turn right 
+void move_left() {
+  servoRight.writeMicroseconds(1300);  
+  servoLeft.writeMicroseconds(1300);   
+} 
+
+// stop function
+void stop() {
+  servoRight.writeMicroseconds(1500);
+  servoLeft.writeMicroseconds(1500);
+}
+
+
+void setup() {
+  // Robot setup
+  servoLeft.attach(13);
+  servoRight.attach(12);
+
+  // Button setup
+  pinMode(Forward_B, INPUT_PULLUP);
+  pinMode(Backward_B, INPUT_PULLUP);
+  pinMode(Left_B, INPUT_PULLUP);
+  pinMode(Right_B, INPUT_PULLUP);
+
+  // Serial setup (only used for checking if the buttons are pressed)
+  Serial.begin(9600);
+}
+
+// main loop
+void loop() {
+  // Reading the button
+  int Forward_state = digitalRead(Forward_B);
+  int Backward_state = digitalRead(Backward_B);
+  int Left_state = digitalRead(Left_B);
+  int Right_state = digitalRead(Right_B);
+
+  // decision making from pressing buttons
+  if (Forward_state == LOW) {
+    // moving forward
+    move_forward();
+    Serial.println("Forward button is pressed");
+
+  } else if (Backward_state == LOW) {
+    // moving backward
+    move_backward();
+    Serial.println("Backward button is pressed");
+
+  } else if (Left_state == LOW) {
+    // turning left
+    move_left();
+    Serial.println("Left button is pressed");
+
+  } else if (Right_state == LOW) {
+    // turning right
+    move_right();
+    Serial.println("Right button is pressed");
+
+  } else {
+    // stop moving
+    stop();
+    Serial.println("Nothing is pressed");
+  }
+}
