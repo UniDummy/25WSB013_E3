@@ -91,4 +91,5 @@ void loop() {
     stop();
     Serial.println("Nothing is pressed");
   }
+  delay(200);
 }
