@@ -1,6 +1,6 @@
 This is the sub branch for the project.
 
-This branch contains the individual test scripts used to demonstrates the specific tasks of each component will partake and verify the performance of it. This included the buttons, robot motors and LED.
+This branch contains the individual test scripts used to demonstrates the specific tasks of each component will partake and verify the performance of it. This included the buttons, robot motors, LED and Bluetooth module.
 
 Buttons:
 This code used to test the input detection. The button should generate a constant input while it is held down, and no input when it is released.
