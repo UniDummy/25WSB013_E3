@@ -1,0 +1,36 @@
+#include "BluetoothSerial.h" 
+ 
+BluetoothSerial SerialBT; 
+ 
+// HC-05 MAC address 
+uint8_t address[6] = {0x98, 0xD3, 0x11, 0xFD, 0x51, 0x70}; 
+const char* pin = "1234"; 
+ 
+ 
+void setup() { 
+  Serial.begin(9600); 
+ 
+  // Start ESP32 Bluetooth in Master Mode 
+  SerialBT.begin("ESP32-Master", true);   
+  SerialBT.setPin(pin,4); 
+ 
+  Serial.println("Connecting to HC-05..."); 
+ 
+  // Connect using classic Bluetooth SPP 
+  if (SerialBT.connect(address, true)) { 
+    Serial.println("CONNECTED to HC-05!"); 
+  } else { 
+    Serial.println("Initial connection failed. Retrying..."); 
+    while (!SerialBT.connected(10000)) { 
+      Serial.println("Retrying..."); 
+      SerialBT.connect(address, true); 
+    } 
+  } 
+} 
+ 
+
+void loop() { 
+  if (Serial.available()) SerialBT.write(Serial.read()); 
+  if (SerialBT.available()) Serial.write(SerialBT.read()); 
+} 
+ 
