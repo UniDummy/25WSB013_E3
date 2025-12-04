@@ -2,10 +2,10 @@ This is the sub branch for the project.
 
 This branch contains the individual test scripts used to demonstrates the specific tasks of each component will partake and verify the performance of it. This included the buttons, robot motors, LED and Bluetooth module.
 
-Buttons:
+Button:
 This code used to test the input detection. The button should generate a constant input while it is held down, and no input when it is released.
 
-Robot Motors:
+Robot Movement:
 This code used to test movement control is all four directions: forward, backward, left turn and right turn. These tests are performed using keyboard inputs to ensure the robot only moves when explicit commands are given.
 
 LED:
