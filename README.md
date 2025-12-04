@@ -12,4 +12,7 @@ LED:
 This code used to test the task carried out by the LED based on different voltage levels. The LED should remain off when the capacitor isnt charging, it flashes continuously while the capacitor is charging and stay litted once the capacitor exceeds a defined charge threshold.
 
 Bluetooth: (Connect EP32-WROOM with HC-05)
-This code used to test the Bluetooth paring and communication between the EP32-WROOM and HC-05 module. In this setup the EP32-WROOM should successfully transmit data through the HC-05 to the Arduino on the robot. This test are performed by sending text messages via the Serial Monitor from one device to another.
+These code used to test the Bluetooth paring and communication between the EP32-WROOM and HC-05 module. In this setup the EP32-WROOM should successfully transmit data through the HC-05 to the Arduino on the robot. This test are performed by sending text messages via the Serial Monitor from one device to another.
+
+Movement Control with Bluetooth:
+These code is used to test the wireless movement control of the robot. The test is performed using a laptop connected to the ESP32-WROOM, then the movement commands are sent through the Serial Monitor. These commands are transmitted via Bluetooth to the HC-05 module on the robot, whhch then causing the robot to be controlled by the laptop and move accordingly.
