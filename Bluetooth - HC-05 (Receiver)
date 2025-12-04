@@ -1,0 +1,19 @@
+#include <SoftwareSerial.h>
+//Pin connection for HC-05
+SoftwareSerial BT(2, 3);  //RX, TX
+
+//setup the Serial Monitor
+void setup() {
+  Serial.begin(9600);
+  BT.begin(9600);
+  Serial.println("HC-05 is ready");
+}
+
+//Reading the data sent from ESP32-WROOM
+void loop() {
+  if (BT.available()) {
+    char c = BT.read();
+    //Serial.print("From EP32: ");
+    Serial.write(c);
+  }
+}
