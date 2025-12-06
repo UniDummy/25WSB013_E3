@@ -1,79 +1,73 @@
-#include <SoftwareSerial.h>
-#include <Servo.h>
-
-// HC-05 setup
-SoftwareSerial BT(2, 3); //RX, TX
-
-// Robot setup
-Servo servoRight;
-Servo servoLeft;
-
-
-//Robot Movement
-//moving forward
-void move_forward() {
-  servoLeft.writeMicroseconds(2000);
-  servoRight.writeMicroseconds(1000);
-  //delay(1000);
-  //servoRight.writeMicroseconds(1500);
-  //servoLeft.writeMicroseconds(1500);
-}
-
-//moving backward
-void move_backward() {
-  servoLeft.writeMicroseconds(1000); 
-  servoRight.writeMicroseconds(2000);
-  //delay(1000);
-  //servoRight.writeMicroseconds(1500);
-  //servoLeft.writeMicroseconds(1500);
-}
-
-//turning right
-void turn_right() {
-  servoRight.writeMicroseconds(1700);  
-  servoLeft.writeMicroseconds(1700);
-  //delay(1000);
-  //servoRight.writeMicroseconds(1500);
-  //servoLeft.writeMicroseconds(1500);
-}
-
-//turning left
-void turn_left() {
-  servoRight.writeMicroseconds(1300);  
-  servoLeft.writeMicroseconds(1300); 
-  //delay(1000);
-  //servoRight.writeMicroseconds(1500);
-  //servoLeft.writeMicroseconds(1500);
-}
-
-//stop function
-void stop() {
-  servoRight.writeMicroseconds(1500);
-  servoLeft.writeMicroseconds(1500);
-}
-
-
-
-void setup() {
-  //Robot setup
-  servoLeft.attach(13);
-  servoRight.attach(12);
-
-  //Serial setup
-  Serial.begin(9600);
-  BT.begin(9600);
-  Serial.println("HC-05 is ready");
-  Serial.println("w = forward, a = left, s = backward, d = right");
-}
-
-//Main Program
+#include "BluetoothSerial.h" 
+ 
+BluetoothSerial SerialBT; 
+const int Forward_B = 25;  
+const int Backward_B = 26;  
+const int Left_B = 27;  
+const int Right_B = 14;  
+ 
+ 
+// HC-05 MAC address 
+uint8_t address[6] = {0x98, 0xD3, 0x11, 0xFD, 0x51, 0x70}; 
+const char* pin = "1234"; 
+ 
+ 
+void setup() { 
+  pinMode(Forward_B, INPUT_PULLUP);  
+  pinMode(Backward_B, INPUT_PULLUP);  
+  pinMode(Left_B, INPUT_PULLUP);  
+  pinMode(Right_B, INPUT_PULLUP);  
+  Serial.begin(9600); 
+ 
+ 
+  // Start ESP32 Bluetooth in Master Mode 
+  SerialBT.begin("ESP32-Master", true);   
+  SerialBT.setPin(pin,4); 
+ 
+ 
+  Serial.println("Connecting to HC-05..."); 
+ 
+ 
+  // Connect using classic Bluetooth SPP 
+  if (SerialBT.connect(address, true)) { 
+    Serial.println("CONNECTED to HC-05!"); 
+  } else { 
+    Serial.println("Initial connection failed. Retrying..."); 
+    while (!SerialBT.connected(10000)) { 
+      Serial.println("Retrying..."); 
+      SerialBT.connect(address, true); 
+    } 
+  } 
+} 
+ 
+ 
 void loop() {
-  if (BT.available()) {  
-    char command = BT.read();  
-    if (command == 'w') move_forward();
-    else if (command == 'a') turn_left();  
-    else if (command == 'd') turn_right();  
-    else if (command == 's') move_backward();
-    else stop();  
+  //Reading the button state
+  int Forward_state = digitalRead(Forward_B);  
+  int Backward_state = digitalRead(Backward_B);  
+  int Left_state = digitalRead(Left_B);  
+  int Right_state = digitalRead(Right_B);  
+ 
+
+  //Sending letter to HC-05
+  if (Forward_state == LOW) {  
+    SerialBT.write('w');  
+    Serial.println("forward pressed")
+  } else if (Backward_state == LOW) {  
+    SerialBT.write('s');
+    Serial.println(("backward pressed"))
+  } else if (Left_state == LOW) {  
+    SerialBT.write('a');
+    Serial.println("left pressed")
+  } else if (Right_state == LOW) {  
+    SerialBT.write('d');
+    Serial.println("Right pressed")
+  } else {
+    SerialBT.write('nothing')
+    Serial.println("Nothing pressed")
   }
-}
+  delay(70);
+  //if (Serial.available()) SerialBT.write(Serial.read()); 
+  //if (SerialBT.available()) Serial.write(SerialBT.read()); 
+} 
+ 
