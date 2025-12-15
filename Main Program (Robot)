@@ -1,0 +1,79 @@
+#include <SoftwareSerial.h>
+#include <Servo.h>
+
+// HC-05 setup
+SoftwareSerial BT(2, 3); //RX, TX
+
+// Robot setup
+Servo servoRight;
+Servo servoLeft;
+
+
+//Robot Movement
+//moving forward
+void move_forward() {
+  servoLeft.writeMicroseconds(2000);
+  servoRight.writeMicroseconds(1000);
+  //delay(1000);
+  //servoRight.writeMicroseconds(1500);
+  //servoLeft.writeMicroseconds(1500);
+}
+
+//moving backward
+void move_backward() {
+  servoLeft.writeMicroseconds(1000); 
+  servoRight.writeMicroseconds(2000);
+  //delay(1000);
+  //servoRight.writeMicroseconds(1500);
+  //servoLeft.writeMicroseconds(1500);
+}
+
+//turning right
+void turn_right() {
+  servoRight.writeMicroseconds(1700);  
+  servoLeft.writeMicroseconds(1700);
+  //delay(1000);
+  //servoRight.writeMicroseconds(1500);
+  //servoLeft.writeMicroseconds(1500);
+}
+
+//turning left
+void turn_left() {
+  servoRight.writeMicroseconds(1300);  
+  servoLeft.writeMicroseconds(1300); 
+  //delay(1000);
+  //servoRight.writeMicroseconds(1500);
+  //servoLeft.writeMicroseconds(1500);
+}
+
+//stop function
+void stop() {
+  servoRight.writeMicroseconds(1500);
+  servoLeft.writeMicroseconds(1500);
+}
+
+
+
+void setup() {
+  //Robot setup
+  servoLeft.attach(13);
+  servoRight.attach(12);
+
+  //Serial setup
+  Serial.begin(9600);
+  BT.begin(9600);
+  Serial.println("HC-05 is ready");
+  Serial.println("w = forward, a = left, s = backward, d = right");
+}
+
+//Main Program
+void loop() {
+  if (BT.available()) {  
+    char command = BT.read();  
+    if (command == 'w') move_forward();
+    else if (command == 'a') turn_left();  
+    else if (command == 'd') turn_right();  
+    else if (command == 's') move_backward();
+    else stop();
+  }
+}
