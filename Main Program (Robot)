@@ -8,6 +8,16 @@ SoftwareSerial BT(2, 3); //RX, TX
 Servo servoRight;
 Servo servoLeft;
 
+// Voltage reading
+int sensorPin = A0;
+float value = 0;
+float voltage = 0;
+
+// LED feedback
+int RedLED = ;
+int YellowLED = ;
+int GreenLED = ;
+
 
 //Robot Movement
 //moving forward
@@ -64,16 +74,63 @@ void setup() {
   BT.begin(9600);
   Serial.println("HC-05 is ready");
   Serial.println("w = forward, a = left, s = backward, d = right");
+
+  //LED setup
+  pinMode(RedLED, OUTPUT);
+  pinMode(YellowLED, OUTPUT);
+  pinMode(GreenLED, OUTPUT);
 }
 
 //Main Program
 void loop() {
+  // Reading Voltage
+  value = analogRead(sensorPin);
+  voltage = value * (5.0 / 1023);
+
+  Serial.print("Voltage: ");
+  Serial.println(voltage);
+
+
+  // Moving Robot
   if (BT.available()) {  
     char command = BT.read();  
-    if (command == 'w') move_forward();
-    else if (command == 'a') turn_left();  
-    else if (command == 'd') turn_right();  
-    else if (command == 's') move_backward();
-    else stop();
+    if (command == 'w') {
+      //moving forward
+      move_forward();
+      Serial.println("w has received, now moving forward...");
+    } else if (command == 'a') {
+      //turning left
+      turn_left();  
+      Serial.println("a has received, now turing left...");
+    } else if (command == 'd') {
+      //turning right
+      turn_right();  
+      Serial.println("d has received, now turing right...");
+    } else if (command == 's') {
+      //moving backward
+      move_backward();
+      Serial.println("s has recevied, now moving backward...");
+    } else {
+      //stop
+      stop();
+      //Serial.println("nothing has recevied, so stop...");
+    }
   }
+
+
+  // LED feedback
+  if (voltage >= 1) {
+    // Red LED light up when voltage >= 1
+    digitalWrite(RedLED, HIGH);
+  } else if (voltage >= 3) {
+    // Yellow LED light up when voltage >= 3
+    digitalWrite(RedLED, LOW);
+    digitalWrite(YellowLED, HIGH);
+  } else if (voltage >= 4.8) {
+    // Green LED light up when voltage >= 4.8
+    digitalWrite(YellowLED, LOW);
+    digitalWrite(GreenLED, HIGH);
+  }
+
+  // Comparing Charging Rate
 }
