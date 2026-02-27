@@ -15,14 +15,18 @@ For our remote control, we have decided to use 5 buttons to control the robot. E
 
 
 3. Wireless Charging:
+
 - Coil Placement and Mechanical Design:
+  
 We planned to mount the receiver coil underneath the robot using a custom 3D-printed holder. It is positioned below the battery pack rather than near the servo motors to minimize potential magnetic interference which could affect the performance.
 The design targets a 2mm ground clearance between the robot and ground. Considering the physical structure of the charging station and custom 3D-printed holder, there are 1mm of plastic covering above the transmitter coil and 1mm inner disc supporting the receiver coil respectively. As a result, the total separation distance between the transmitter and receiver coil is approximately 4mm. This distance was selected for balancing the mechanical protection with efficient wireless power transfer.
 
+
 - Capacitor Voltage Monitoring:
+  
 We decided to use the Arduino onboard the robot for monitoring the capacitor voltage during wireless charging. To optimize the charging efficiency and provide clear visual feedback, two separate groups of LEDs act as an indication system are implemented:
 
-  1. Capacitor Voltage Indication System
+1. Capacitor Voltage Indication System
  
   This group consists of 3 LEDs:
   - Red LED -> illuminates when the capacitor reaches 1V
@@ -31,11 +35,13 @@ We decided to use the Arduino onboard the robot for monitoring the capacitor vol
   
   These thresholds provide progressive feedback on the charging status.
 
-  2. Coil Alignment Indication System
+2. Coil Alignment Indication System
   
   This group consists of 3 LEDs of the same colour are used to indicate the quality of alignment between the transmitter and receiver coil. The number of LEDs illuminated corresponds to how well the coils are aligned, provide feedback for adjusting to maximize the charging efficiency.
 
+
 - Charging Strategy
+  
 Since the system uses wireless charging to charge a capacitor, the charging behavior follows an exponential curve. The capacitor charges rapidly at lower voltages and slow down significantly as it approaches its maximum voltage. Although the target is to charge up to 5V, but reaching to this value would require a long charging time.
 Given the competition rules impose a time penalty if fail to reach 5V. Therefore after performing a trade-off analysis back with calculation, we decided to charge the capacitor up to 4.8V, although result in receiving a 1.2 second penalty, but this will allows us to begin moving earlier.
 However, the capacitor naturally experience voltage leakage after charging, decreasing from 4.8V at an average rate of approximately 0.0004V / s. Because of the experimental results, it shows that the time require for the voltage drop from 4.8V to 4.7V is over 6 mins. Therefore, charging up to 4.8V will ensure the capacitor maintains a voltage value above 4.7V by the end of the competition.
