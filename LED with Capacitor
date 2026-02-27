@@ -1,38 +1,44 @@
-// setting up the LED pin
-const int LED = 12;
+int sensorPin = A0;
+int RedLED = 5;
+int YellowLED = 6;
+int GreenLED = 7;
+int value = 0;
+float voltage = 0;
 
 void setup() {
-  pinMode(LED, OUTPUT);
   Serial.begin(9600);
+  pinMode(RedLED, OUTPUT);
+  pinMode(YellowLED, OUTPUT);
+  pinMode(GreenLED, OUTPUT);
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    // reading the number in Serial Monitor
-    float voltage = Serial.parseFloat();
-    Serial.print("What is the voltage value now?: ");
-    Serial.println(voltage);
-  }
+  // reading voltage level in capacitor
+  value = analogRead(sensorPin);
+  voltage = (value * (5 / 1023)) - 0.1;   // to counter the voltage offset in Arduino
+  
+  // tracking voltage level in capacitor
+  Serial.print("Voltage: ");
+  Serial.println(voltage);
 
-  if (voltage < 0.5) {
-    // meaning not charging
-    digitalWrite(LED, LOW);
 
-  } else if (voltage >= 0.5 && voltage < 4.8) {
-    // meaning it is charging
-    digitalWrite(LED, HIGH);
-    delay(200);
-    digitalWrite(LED, LOW);
-    delay(200);
-    digitalWrite(LED, HIGH);
-    delay(200);
-    digitalWrite(LED, LOW);
-
+  // LED indication system
+  if (voltage >= 1 and voltage < 3) {
+    // only RED illuminate
+    digitalWrite(RedLED, HIGH);
+    digitalWrite(YellowLED, LOW);
+  } else if (voltage >= 3 and voltage < 4.8) {
+    // only YELLOW illuminate
+    digitalWrite(RedLED, LOW);
+    digitalWrite(YellowLED, HIGH);
+    digitalWrite(GreenLED, LOW);
   } else if (voltage >= 4.8) {
-    // meaning it charged up to our standard
-    digitalWrite(LED, HIGH);
-
+    // only GREEN illuminate
+    digitalWrite(YellowLED, LOW);
+    digitalWrite(GreenLED, HIGH);
   }
-  // saving memory
-  delay(200);
+
+
+  delay(100);   // prevent run
+
 }
