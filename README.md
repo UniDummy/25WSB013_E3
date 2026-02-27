@@ -23,13 +23,16 @@ The design targets a 2mm ground clearance between the robot and ground. Consider
 We decided to use the Arduino onboard the robot for monitoring the capacitor voltage during wireless charging. To optimize the charging efficiency and provide clear visual feedback, two separate groups of LEDs act as an indication system are implemented:
 
   1. Capacitor Voltage Indication System
+ 
   This group consists of 3 LEDs:
   - Red LED -> illuminates when the capacitor reaches 1V
   - Yellow LED -> illuminates when reaches 3V
   - Green LED -> illuminates when reaches 4.8V
+  
   These thresholds provide progressive feedback on the charging status.
 
   2. Coil Alignment Indication System
+  
   This group consists of 3 LEDs of the same colour are used to indicate the quality of alignment between the transmitter and receiver coil. The number of LEDs illuminated corresponds to how well the coils are aligned, provide feedback for adjusting to maximize the charging efficiency.
 
 - Charging Strategy
