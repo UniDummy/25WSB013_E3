@@ -14,10 +14,12 @@ float value = 0;
 float voltage = 0;
 
 // LED feedback
-int RedLED = ;
-int YellowLED = ;
-int GreenLED = ;
+int RedLED = 5 ;
+int YellowLED = 6 ;
+int GreenLED = 7 ;
 
+int count = 0;
+float V_avg = 0;
 
 //Robot Movement
 //moving forward
@@ -86,7 +88,6 @@ void loop() {
   // Reading Voltage
   value = analogRead(sensorPin);
   voltage = value * (5.0 / 1023);
-
   Serial.print("Voltage: ");
   Serial.println(voltage);
 
@@ -117,20 +118,58 @@ void loop() {
     }
   }
 
+  if (voltage >= 0.3 and voltage <= 4.9){
+    // LED feedback
+    if (voltage >= 1 and voltage < 3) {
+      // Red LED light up when voltage >= 1
+      digitalWrite(RedLED, HIGH);
+      digitalWrite(YellowLED, LOW);
+    } else if (voltage >= 3 and voltage < 4.8) {
+      // Yellow LED light up when voltage >= 3
+      digitalWrite(RedLED, LOW);
+      digitalWrite(YellowLED, HIGH);
+      digitalWrite(GreenLED, LOW);
+    } else if (voltage >= 4.8) {
+      // Green LED light up when voltage >= 4.8
+      digitalWrite(YellowLED, LOW);
+      digitalWrite(GreenLED, HIGH);
+    }
 
-  // LED feedback
-  if (voltage >= 1) {
-    // Red LED light up when voltage >= 1
-    digitalWrite(RedLED, HIGH);
-  } else if (voltage >= 3) {
-    // Yellow LED light up when voltage >= 3
-    digitalWrite(RedLED, LOW);
-    digitalWrite(YellowLED, HIGH);
-  } else if (voltage >= 4.8) {
-    // Green LED light up when voltage >= 4.8
-    digitalWrite(YellowLED, LOW);
-    digitalWrite(GreenLED, HIGH);
+
+
+    // Comparing Charging Rate
+    int t1 = millis();
+    value = analogRead(sensorPin);
+    float v1 = value * (5.0 / 1023);
+    //Serial.print("V1: ");
+    //Serial.println(v1, 4);
+
+    delay(200);
+
+    int t2 = millis();
+    value = analogRead(sensorPin);
+    float v2 = value * (5.0 / 1023);
+    //Serial.print("V2: ");
+    //Serial.println(v2, 4);
+
+    // v_det gradient
+    int time = t2 - t1;
+    float v_det = ((v2 - v1) / (time)) * 1000;
+
+    // mean v_det
+    count = count + 1;
+    V_avg = V_avg + v_det;
+    if (count == 3) {
+      V_avg = V_avg / 3;
+      count = 0;
+      Serial.print("Charging Rate: ");
+      Serial.println(V_avg , 4);
+      V_avg = 0;
+    }
+
+    //Serial.print("Charging Rate: ");
+    //Serial.println(V_avg , 4);
+    delay(100);
   }
 
-  // Comparing Charging Rate
 }
