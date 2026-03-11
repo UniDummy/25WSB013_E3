@@ -24,20 +24,22 @@ The design targets a 2mm ground clearance between the robot and ground. Consider
 
 - Capacitor Voltage Monitoring:
   
-We decided to use the Arduino onboard the robot for monitoring the capacitor voltage during wireless charging. To optimize the charging efficiency and provide clear visual feedback, two separate groups of LEDs act as an indication system are implemented:
+We decided to use the Arduino onboard the robot for monitoring the capacitor voltage during wireless charging. To optimize the charging efficiency and provide clear visual feedback, an LED-baased indication system are implemented:
 
 1. Capacitor Voltage Indication System
- 
-  This group consists of 3 LEDs:
-  - Red LED -> illuminates when the capacitor reaches 1V
-  - Yellow LED -> illuminates when reaches 3V
-  - Green LED -> illuminates when reaches 4.8V
-  
-  These thresholds provide progressive feedback on the charging status.
 
-2. Coil Alignment Indication System
+  This system uses a single LED to indicate when the capacitor has reached the minimum charging requirement we have set. When the capacitor voltage reaches 4.9V, the LED turns on and reamin illuminated for 5 seconds, this indicates the capacitor has reached the requirement and the robot is ready to get moving. After this 5 second period, the LED will automatically turns off for minimizing any unnecessary power consumption from the battery.
+
+3. Coil Alignment Indication System
   
-  This group consists of 3 LEDs of the same colour are used to indicate the quality of alignment between the transmitter and receiver coil. The number of LEDs illuminated corresponds to how well the coils are aligned, provide feedback for adjusting to maximize the charging efficiency.
+  This system uses a single LED to indicate the quality of alignment between the transmitter and receiver coil. The flashing frequency of the LED corresponds to how well the coils are aligned. The LED operate as follows:
+  
+  - LED Off -> capacitor is not charging / finish charging
+  - Slow flashing -> reciver coil is far off from perfect alignment
+  - Fast flashing -> reciver coil is half way from perfect alignment
+  - LED ON -> reciver coil is nearly in perfect alignment
+  
+  These feedback allows adjustments to the robot's position for maximizing the charging efficiency.
 
 
 - Charging Strategy
