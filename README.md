@@ -30,7 +30,7 @@ We decided to use the Arduino onboard the robot for monitoring the capacitor vol
 
   This system uses a single LED to indicate when the capacitor has reached the minimum charging requirement we have set. When the capacitor voltage reaches 4.9V, the LED turns on and reamin illuminated for 5 seconds, this indicates the capacitor has reached the requirement and the robot is ready to get moving. After this 5 second period, the LED will automatically turns off for minimizing any unnecessary power consumption from the battery.
 
-3. Coil Alignment Indication System
+2. Coil Alignment Indication System
   
   This system uses a single LED to indicate the quality of alignment between the transmitter and receiver coil. The flashing frequency of the LED corresponds to how well the coils are aligned. The LED operate as follows:
   
