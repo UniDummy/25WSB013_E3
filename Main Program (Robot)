@@ -121,7 +121,7 @@ void loop() {
       //Serial.println("nothing has recevied, so stop...");
     }
 
-  } else{
+  } else {
 
     // Reading Voltage
     value = analogRead(sensorPin);
@@ -129,48 +129,73 @@ void loop() {
     Serial.print("Voltage: ");
     Serial.println(voltage, 4);
 
+   
+    // Calculating Charging Rate
+    // first measured voltage
+    int t1 = millis();
+    value = analogRead(sensorPin);
+    float v1 = value * (5.0 / 1023);
 
-    if (voltage >= 0.1 and voltage <= 4.9) {  
-      // Calculating Charging Rate
-      // first measured voltage
-      int t1 = millis();
-      value = analogRead(sensorPin);
-      float v1 = value * (5.0 / 1023);
+    delay(200);   // taking reading every 200ms
 
-      delay(200);   // taking reading every 200ms
-
-      // second measured voltage
-      int t2 = millis();
-      value = analogRead(sensorPin);
-      float v2 = value * (5.0 / 1023);
-
-
-      // Calculating gradient
-      int time = t2 - t1;
-      float gradient = ((v2 - v1) / (time)) * 1000;
+    // second measured voltage
+    int t2 = millis();
+    value = analogRead(sensorPin);
+    float v2 = value * (5.0 / 1023);
 
 
-      // Calculating mean gradient
-      count = 1;
-      gradient_avg += gradient;
-      if (count == 3) {
-        gradient_avg = gradient_avg / 3;
+    // Calculating gradient
+    int time = t2 - t1;
+    float gradient = ((v2 - v1) / (time)) * 1000;
 
-        // logging the gradient -> graph become straight line
-        Rate = -log(gradient_avg);
-        Serial.print("Charging Rate: ");
-        Serial.println(Rate , 4);
+    count = count+ 1;
+    // Calculating mean gradient
+    gradient_avg += gradient;
+    if (count == 3) {
+      gradient_avg = gradient_avg / 3;
 
-        // reset variable
-        count = 0;
-        gradient_avg = 0;
+      // logging the gradient -> graph become straight line
+      Rate = -log(gradient_avg);
+      Serial.print("Charging Rate: ");
+      Serial.println(Rate , 4);
+
+      // reset variable
+      count = 0;
+      gradient_avg = 0;
+    }
+
+    //delay(100);   // not overflow the system
+
+    // LED feedback (Coil Alignment)
+    unsigned long current_time = millis();
+
+    // New Requirement when voltage > 3
+    if (voltage >= 3){
+      if (Rate < 3.5){
+        digitalWrite(LED_1, HIGH);
+
+      } else if (Rate >= 3.5 and Rate>= 4.5){
+          if (current_time - pre_time >= mid) {
+
+          pre_time = current_time;
+
+          LED_state = !LED_state;
+          digitalWrite(LED_1, LED_state);
+        }
+      } else if (Rate > 4.5 and Rate <= 4.8){
+          if (current_time - pre_time >= far) {
+
+            pre_time = current_time;
+
+            LED_state = !LED_state;
+            digitalWrite(LED_1, LED_state);
+          }
+      } else {
+          digitalWrite(LED_1, LOW);
+
       }
 
-      //delay(100);   // not overflow the system
-
-      // LED feedback (Coil Alignment)
-      unsigned long current_time = millis();
-      
+    } else {
       if (Rate < charging_close) {
         // Constantly on when coil is nearly in perfect alignment
         digitalWrite(LED_1, HIGH);
@@ -201,23 +226,25 @@ void loop() {
 
       }
 
+    }
 
-      // LED feedback (Capacitor Voltage)
-      if (voltage >= 4.7) {
-        // Only turn on when voltage level is above 4.7V
-        digitalWrite(LED_2, HIGH);
+    // LED feedback (Capacitor Voltage)
+    if (voltage >= 4.7) {
+      // Only turn on when voltage level is above 4.7V
+      digitalWrite(LED_2, HIGH);
 
-      } else {
-        // LED staying off otherwise
+      int LED_time = millis();
+
+      if (LED_time > 5000){
         digitalWrite(LED_2, LOW);
-
       }
-
     } else {
-      // Turn off the LED once finished charging
-      digitalWrite(LED_1, LOW);
+      // LED staying off otherwise
       digitalWrite(LED_2, LOW);
 
     }
+
+
   }
+  
 }
