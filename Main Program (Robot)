@@ -18,6 +18,13 @@ int LED_1 = 6;    // LED for Coil Alignment
 int LED_2 = 7;    // LED for Capacitor Voltage
 
 // Charging rate feedback
+int t1 = 0;
+int t2 = 0;
+float v1 = 0;
+float v2 = 0;
+const long delay_time = 200;
+bool wait_second_reading = false;
+unsigned long pre_time_voltage = 0;
 float Rate = 0;
 float charging_close = 2;   // ideal range for charging rate when perfect alignment
 float charging_mid = 3;     // ideal range for charging rate when close to center
@@ -122,35 +129,44 @@ void loop() {
     }
 
   } else {
+    unsigned long current_time = millis();
 
     // Reading Voltage
     value = analogRead(sensorPin);
     voltage = value * (5.0 / 1023);
-    Serial.print("Voltage: ");
-    Serial.println(voltage, 4);
+    //Serial.print("Voltage: ");
+    //Serial.println(voltage, 4);
 
    
     // Calculating Charging Rate
-    // first measured voltage
-    int t1 = millis();
-    value = analogRead(sensorPin);
-    float v1 = value * (5.0 / 1023);
+    if (!wait_second_reading) {
+      // first measured voltage
+      t1 = current_time;
+      value = analogRead(sensorPin);
+      v1 = value * (5.0 / 1023);
 
-    delay(200);   // taking reading every 200ms
+      pre_time_voltage = current_time;
+      wait_second_reading = true;
+    }
+    
+    if (wait_second_reading && (current_time - pre_time_voltage >= 200)) {
+      // second measured voltage
+      t2 = current_time;
+      value = analogRead(sensorPin);
+      v2 = value * (5.0 / 1023);
 
-    // second measured voltage
-    int t2 = millis();
-    value = analogRead(sensorPin);
-    float v2 = value * (5.0 / 1023);
 
+      // Calculating gradient
+      int time = t2 - t1;
+      float gradient = ((v2 - v1) / (time)) * 1000;
 
-    // Calculating gradient
-    int time = t2 - t1;
-    float gradient = ((v2 - v1) / (time)) * 1000;
-
-    count = count+ 1;
+      count = count + 1;
+      gradient_avg += gradient;   // getting the total gradient
+  
+      wait_second_reading = false;    // reset for next cycle
+    }
+    
     // Calculating mean gradient
-    gradient_avg += gradient;
     if (count == 3) {
       gradient_avg = gradient_avg / 3;
 
@@ -167,7 +183,6 @@ void loop() {
     //delay(100);   // not overflow the system
 
     // LED feedback (Coil Alignment)
-    unsigned long current_time = millis();
 
     // New Requirement when voltage > 3
     if (voltage >= 3){
