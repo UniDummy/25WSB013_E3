@@ -52,19 +52,19 @@ void loop() {
   
   if (Forward_state == LOW) {  
     SerialBT.write('w');  
-    Serial.println("forward pressed")
+    //Serial.println("forward pressed")
   } else if (Backward_state == LOW) {  
     SerialBT.write('s');
-    Serial.println(("backward pressed"))
+    //Serial.println(("backward pressed"))
   } else if (Left_state == LOW) {  
     SerialBT.write('a');
-    Serial.println("left pressed")
+    //Serial.println("left pressed")
   } else if (Right_state == LOW) {  
     SerialBT.write('d');
-    Serial.println("Right pressed")
+    //Serial.println("Right pressed")
   } else {
     SerialBT.write('nothing')
-    Serial.println("Nothing pressed")
+    //Serial.println("Nothing pressed")
   }
   delay(70);
   //if (Serial.available()) SerialBT.write(Serial.read()); 
