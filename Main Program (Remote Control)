@@ -1,10 +1,10 @@
 #include "BluetoothSerial.h" 
  
 BluetoothSerial SerialBT; 
-const int Forward_B = 25;  
-const int Backward_B = 26;  
-const int Left_B = 27;  
-const int Right_B = 14;  
+const int Forward_B = 5;  
+const int Backward_B = 17;  
+const int Left_B = 16;  
+const int Right_B = 4;  
  
  
 // HC-05 MAC address 
@@ -13,6 +13,7 @@ const char* pin = "1234";
  
  
 void setup() { 
+  // Buttons setup
   pinMode(Forward_B, INPUT_PULLUP);  
   pinMode(Backward_B, INPUT_PULLUP);  
   pinMode(Left_B, INPUT_PULLUP);  
@@ -42,14 +43,13 @@ void setup() {
  
  
 void loop() { 
-  //Reading the button state
+  // Reading if buttons are pressed
   int Forward_state = digitalRead(Forward_B);  
   int Backward_state = digitalRead(Backward_B);  
   int Left_state = digitalRead(Left_B);  
   int Right_state = digitalRead(Right_B);  
  
-
-  //Sending letter to HC-05
+  
   if (Forward_state == LOW) {  
     SerialBT.write('w');  
     Serial.println("forward pressed")
