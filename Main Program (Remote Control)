@@ -63,7 +63,7 @@ void loop() {
     SerialBT.write('d');
     //Serial.println("Right pressed")
   } else {
-    SerialBT.write('nothing')
+    SerialBT.write('nothing');
     //Serial.println("Nothing pressed")
   }
   delay(70);
