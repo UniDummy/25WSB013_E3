@@ -24,11 +24,12 @@ float v1 = 0;
 float v2 = 0;
 const long delay_time = 200;
 bool wait_second_reading = false;
+bool target_voltage = false;
 unsigned long pre_time_voltage = 0;
 float Rate = 0;
-float charging_close = 2;   // ideal range for charging rate when perfect alignment
-float charging_mid = 3;     // ideal range for charging rate when close to center
-float charging_far = 4;     // ideal range for charging rate when far from center
+float charging_close = 1.25;   // ideal range for charging rate when perfect alignment
+float charging_mid = 2;     // ideal range for charging rate when close to center
+float charging_far = 3;     // ideal range for charging rate when far from center
 
 // LED feedback (Coil Alignment)
 unsigned long pre_time = 0;   // use millis() instead of delay()
@@ -149,12 +150,13 @@ void loop() {
       wait_second_reading = true;
     }
     
-    if (wait_second_reading && (current_time - pre_time_voltage >= 200)) {
+    if (wait_second_reading && (current_time - pre_time_voltage >= 400)) {
       // second measured voltage
       t2 = current_time;
       value = analogRead(sensorPin);
       v2 = value * (5.0 / 1023);
-
+      Serial.print("Voltage: ");
+      Serial.println(v2, 4);
 
       // Calculating gradient
       int time = t2 - t1;
@@ -244,14 +246,15 @@ void loop() {
     }
 
     // LED feedback (Capacitor Voltage)
-    if (voltage >= 4.7) {
-      // Only turn on when voltage level is above 4.7V
+    if (voltage >= 4.9 and target_voltage == false) {
+      // Only turn on when voltage level is above 4.7V and has not reached 4.7V previously
       digitalWrite(LED_2, HIGH);
 
       int LED_time = millis();
 
       if (LED_time > 5000){
         digitalWrite(LED_2, LOW);
+        target_voltage = true;
       }
     } else {
       // LED staying off otherwise
