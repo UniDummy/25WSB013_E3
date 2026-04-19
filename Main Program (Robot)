@@ -10,35 +10,34 @@ Servo servoLeft;
 
 // Voltage reading
 int sensorPin = A0;
-float value = 0;
+float value = 0;    // the reading straight from Arduino
 float voltage = 0;
 
 // LED identication
-int LED_1 = 6;    // LED for Coil Alignment
-int LED_2 = 7;    // LED for Capacitor Voltage
+int LED_1 = 6;    // Red LED for Coil Alignment
+int LED_2 = 7;    // Green LED for Capacitor Voltage
 
-// Charging rate feedback
-int t1 = 0;
-int t2 = 0;
-float v1 = 0;
-float v2 = 0;
-const long delay_time = 200;
-bool wait_second_reading = false;
-bool target_voltage = false;
-unsigned long pre_time_voltage = 0;
-float Rate = 0;
+// Charging rate feedback (Coil Alignment)
+int t1 = 0;   // time for the first voltage reading
+int t2 = 0;   // time for the second voltage reading
+float v1 = 0;   // voltage value for first voltage reading
+float v2 = 0;   // voltage value for second voltage reading
+bool wait_second_reading = false;   // boolean value for determing whether the second voltage reading is read
+bool target_voltage = false;    // boolean value for determing whether it has reached 4.9V
+unsigned long pre_time_voltage = 0;   // value used for counting the time difference betwwen the first and second voltage reading
+float Rate = 0;   // charging rate for charging the capacitor
 float charging_close = 1.25;   // ideal range for charging rate when perfect alignment
 float charging_mid = 2;     // ideal range for charging rate when close to center
 float charging_far = 3;     // ideal range for charging rate when far from center
 
 // LED feedback (Coil Alignment)
-unsigned long pre_time = 0;   // use millis() instead of delay()
+unsigned long pre_time = 0;   // use millis() instead of delay() for LED flashing
 const long far = 500;   // value for determining how LED falshes
-const long mid = 200;
+const long mid = 200;   // value for determining how LED flashes
 bool LED_state = LOW;
 
-
-int count = 0;
+// Finding Gradient for charging rate
+int count = 0;    // value for finding the mean between 3 reading 
 float gradient_avg = 0;
 
 
@@ -98,8 +97,8 @@ void setup() {
   Serial.println("w = forward, a = left, s = backward, d = right");
 
   //LED setup
-  pinMode(LED_1, OUTPUT);
-  pinMode(LED_2, OUTPUT);
+  pinMode(LED_1, OUTPUT);   // Red LED
+  pinMode(LED_2, OUTPUT);   // Green LED
 }
 
 //Main Program
@@ -138,25 +137,24 @@ void loop() {
     //Serial.print("Voltage: ");
     //Serial.println(voltage, 4);
 
-   
+
     // Calculating Charging Rate
     if (!wait_second_reading) {
-      // first measured voltage
+      // first measured voltage reading
       t1 = current_time;
       value = analogRead(sensorPin);
       v1 = value * (5.0 / 1023);
 
-      pre_time_voltage = current_time;
+      pre_time_voltage = current_time;  // counting 400ms between first and second reading
       wait_second_reading = true;
     }
     
     if (wait_second_reading && (current_time - pre_time_voltage >= 400)) {
-      // second measured voltage
+      // second measured voltage reading
       t2 = current_time;
       value = analogRead(sensorPin);
       v2 = value * (5.0 / 1023);
-      Serial.print("Voltage: ");
-      Serial.println(v2, 4);
+
 
       // Calculating gradient
       int time = t2 - t1;
@@ -185,7 +183,6 @@ void loop() {
     //delay(100);   // not overflow the system
 
     // LED feedback (Coil Alignment)
-
     // New Requirement when voltage > 3
     if (voltage >= 3){
       if (Rate < 3.5){
@@ -209,10 +206,9 @@ void loop() {
           }
       } else {
           digitalWrite(LED_1, LOW);
-
       }
 
-    } else {
+    } else {  // when voltage < 3
       if (Rate < charging_close) {
         // Constantly on when coil is nearly in perfect alignment
         digitalWrite(LED_1, HIGH);
@@ -238,31 +234,28 @@ void loop() {
         }
 
       } else {
-        // LED is off when either it is not charging or not even close to coil
+        // LED is off when either it is not charging or not even close to the coil
         digitalWrite(LED_1, LOW);
 
       }
-
     }
 
     // LED feedback (Capacitor Voltage)
     if (voltage >= 4.9 and target_voltage == false) {
-      // Only turn on when voltage level is above 4.7V and has not reached 4.7V previously
+      // Only turn on when voltage level is above 4.9V
       digitalWrite(LED_2, HIGH);
 
-      int LED_time = millis();
+      int LED_time = millis();    // used for couting 5 seconds
 
       if (LED_time > 5000){
+        // Green LED will be turned on for 5 seconds
         digitalWrite(LED_2, LOW);
-        target_voltage = true;
+        target_voltage = true;    // this will prevent the Green LED to turn on again
       }
     } else {
       // LED staying off otherwise
       digitalWrite(LED_2, LOW);
 
     }
-
-
   }
-  
 }
