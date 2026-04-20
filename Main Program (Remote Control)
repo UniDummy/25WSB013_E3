@@ -1,10 +1,10 @@
 #include "BluetoothSerial.h" 
  
 BluetoothSerial SerialBT; 
-const int Forward_B = 5;  
-const int Backward_B = 17;  
-const int Left_B = 16;  
-const int Right_B = 4;  
+const int Forward_B = 4;  
+const int Backward_B = 16;  
+const int Left_B = 17;  
+const int Right_B = 5;  
  
  
 // HC-05 MAC address 
