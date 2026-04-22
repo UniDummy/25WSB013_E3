@@ -172,8 +172,8 @@ void loop() {
 
       // logging the gradient -> graph become straight line
       Rate = -log(gradient_avg);
-      Serial.print("Charging Rate: ");
-      Serial.println(Rate , 4);
+      //Serial.print("Charging Rate: ");
+      //Serial.println(Rate , 4);
 
       // reset variable
       count = 0;
